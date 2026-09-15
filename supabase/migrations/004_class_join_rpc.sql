@@ -188,7 +188,7 @@ begin
 
   insert into public.class_members (class_id, student_id, status)
   values (v_class_id, v_student_id, 'active')
-  on conflict (class_id, student_id) do nothing;
+  on conflict on constraint class_members_pkey do nothing;
 
   select cm.status
   into v_existing_status
