@@ -51,7 +51,6 @@ begin
     raise exception 'Create-class RPC did not return a 10-character code';
   end if;
 
-  reset role;
   select join_code_hash into v_hash from public.classes where id = v_class_id;
   if v_hash is null or v_hash = v_code then
     raise exception 'Plaintext join code was stored in classes';
