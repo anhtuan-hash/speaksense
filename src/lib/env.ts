@@ -24,4 +24,20 @@ export function parsePublicEnv(raw: Record<string, unknown>): PublicEnv {
   };
 }
 
-export const env = parsePublicEnv(import.meta.env as unknown as Record<string, unknown>);
+let cachedRuntimeEnv: PublicEnv | undefined;
+
+function readRuntimeEnv(): PublicEnv {
+  cachedRuntimeEnv ??= parsePublicEnv(
+    import.meta.env as unknown as Record<string, unknown>,
+  );
+  return cachedRuntimeEnv;
+}
+
+export const env: PublicEnv = Object.freeze({
+  get supabaseUrl() {
+    return readRuntimeEnv().supabaseUrl;
+  },
+  get supabaseAnonKey() {
+    return readRuntimeEnv().supabaseAnonKey;
+  },
+});
