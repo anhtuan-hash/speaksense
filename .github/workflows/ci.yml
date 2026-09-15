@@ -16,3 +16,18 @@ jobs:
       - run: npm install
       - run: npm test
       - run: npm run build
+
+  database-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Initialize Supabase local config
+        run: supabase init
+      - name: Start local Supabase
+        run: supabase start
+      - name: Assert database contracts
+        run: psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 -f tests/sql/001_core_schema.sql
