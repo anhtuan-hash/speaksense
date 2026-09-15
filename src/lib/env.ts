@@ -26,18 +26,15 @@ export function parsePublicEnv(raw: Record<string, unknown>): PublicEnv {
 
 let cachedRuntimeEnv: PublicEnv | undefined;
 
-function readRuntimeEnv(): PublicEnv {
+export function getPublicEnv(): PublicEnv {
   cachedRuntimeEnv ??= parsePublicEnv(
     import.meta.env as unknown as Record<string, unknown>,
   );
   return cachedRuntimeEnv;
 }
 
-export const env: PublicEnv = Object.freeze({
-  get supabaseUrl() {
-    return readRuntimeEnv().supabaseUrl;
-  },
-  get supabaseAnonKey() {
-    return readRuntimeEnv().supabaseAnonKey;
+export const env = new Proxy({} as PublicEnv, {
+  get(_target, property: keyof PublicEnv) {
+    return getPublicEnv()[property];
   },
 });
